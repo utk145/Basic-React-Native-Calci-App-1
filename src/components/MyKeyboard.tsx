@@ -10,8 +10,10 @@ const MyKeyboard = () => {
     const [firstNumber, setFirstNumber] = useState("");
     const [secondNumber, setSecondNumber] = useState("");
     const [operation, setOperation] = useState("");
-    const [result, setResult] = useState<Number | null>(null);
+    // const [result, setResult] = useState<Number | null>(null);
     /* <Number | null> is a type annotation indicating that the state variable result will either be of type Number or null. This means that the initial value of result will be null. */
+
+    const [result, setResult] = useState("");
 
     const NumberPressHandler = (buttonVal: string) => {
         if (firstNumber.length < 10) {
@@ -100,8 +102,70 @@ const MyKeyboard = () => {
     };
 
 
+    const calculate = (title) => {
+        if (title == 'C') {
+            setResult('');
+        } else if (title == '⌫') {
+            setResult(result.substring(0, result.length - 1));
+        }
+        else if (title === "%") {
+            // Handle percentage calculation
+            const percentValue = Number(result) / 100;
+            setResult(percentValue.toString());
+        }
+        else if (title === '=') {
+            const expressionRegex = /^[\d+\-*/().\s]+$/;
+            if (!expressionRegex.test(result)) {
+                setResult("Invalid expression");
+                return;
+            }
+            const ans = Number(eval(result).toFixed(3)).toString();
+            setResult(ans);
+        } else {
+            setResult(result + title);
+        }
+    }
 
     return (
+        // <View style={Styles.viewBottom}>
+        //     <View style={{ height: 120, width: "90%", justifyContent: "flex-end", alignSelf: "center" }}>
+        //         <Text style={Styles.screenSecondNumber}>
+        //             {secondNumber}
+        //             <Text style={{ color: "orange", fontSize: 50, fontWeight: "500" }}>{operation}</Text>
+        //         </Text>
+        //         {firstNumberDisplay()}
+        //     </View>
+        //     <View style={Styles.row}>
+        //         <Button title='C' isGray onPress={clear} />
+        //         <Button title='+/-' isGray onPress={() => OperationPressHandler("+/-")} />
+        //         <Button title="％" isGray onPress={() => OperationPressHandler("％")} />
+        //         <Button title="÷" isBlue onPress={() => OperationPressHandler("/")} />
+        //     </View>
+        //     <View style={Styles.row}>
+        //         <Button title="7" onPress={() => NumberPressHandler("7")} />
+        //         <Button title="8" onPress={() => NumberPressHandler("8")} />
+        //         <Button title="9" onPress={() => NumberPressHandler("9")} />
+        //         <Button title="×" isBlue onPress={() => OperationPressHandler("*")} />
+        //     </View>
+        //     <View style={Styles.row}>
+        //         <Button title="4" onPress={() => NumberPressHandler("4")} />
+        //         <Button title="5" onPress={() => NumberPressHandler("5")} />
+        //         <Button title="6" onPress={() => NumberPressHandler("6")} />
+        //         <Button title="-" isBlue onPress={() => OperationPressHandler("-")} />
+        //     </View>
+        //     <View style={Styles.row}>
+        //         <Button title="1" onPress={() => NumberPressHandler("1")} />
+        //         <Button title="2" onPress={() => NumberPressHandler("2")} />
+        //         <Button title="3" onPress={() => NumberPressHandler("3")} />
+        //         <Button title="+" isBlue onPress={() => OperationPressHandler("+")} />
+        //     </View>
+        //     <View style={Styles.row}>
+        //         <Button title="." onPress={() => NumberPressHandler(".")} />
+        //         <Button title="0" onPress={() => NumberPressHandler("0")} />
+        //         <Button title="⌫" onPress={() => setFirstNumber(firstNumber.slice(0, -1))} />
+        //         <Button title="=" isBlue onPress={() => compResult()} />
+        //     </View>
+        // </View>
         <View style={Styles.viewBottom}>
             <View style={{ height: 120, width: "90%", justifyContent: "flex-end", alignSelf: "center" }}>
                 <Text style={Styles.screenSecondNumber}>
@@ -109,36 +173,37 @@ const MyKeyboard = () => {
                     <Text style={{ color: "orange", fontSize: 50, fontWeight: "500" }}>{operation}</Text>
                 </Text>
                 {firstNumberDisplay()}
+
             </View>
             <View style={Styles.row}>
-                <Button title='C' isGray onPress={clear} />
-                <Button title='+/-' isGray onPress={() => OperationPressHandler("+/-")} />
-                <Button title="％" isGray onPress={() => OperationPressHandler("％")} />
-                <Button title="÷" isBlue onPress={() => OperationPressHandler("/")} />
+                <Button title='C' isGray onPress={() => calculate("C")} />
+                <Button title='+/-' isGray onPress={() => calculate("+/-")} />
+                <Button title="%" isGray onPress={() => calculate("%")} />
+                <Button title="÷" isBlue onPress={() => calculate("/")} />
             </View>
             <View style={Styles.row}>
-                <Button title="7" onPress={() => NumberPressHandler("7")} />
-                <Button title="8" onPress={() => NumberPressHandler("8")} />
-                <Button title="9" onPress={() => NumberPressHandler("9")} />
-                <Button title="×" isBlue onPress={() => OperationPressHandler("*")} />
+                <Button title="7" onPress={() => calculate("7")} />
+                <Button title="8" onPress={() => calculate("8")} />
+                <Button title="9" onPress={() => calculate("9")} />
+                <Button title="×" isBlue onPress={() => calculate("*")} />
             </View>
             <View style={Styles.row}>
-                <Button title="4" onPress={() => NumberPressHandler("4")} />
-                <Button title="5" onPress={() => NumberPressHandler("5")} />
-                <Button title="6" onPress={() => NumberPressHandler("6")} />
-                <Button title="-" isBlue onPress={() => OperationPressHandler("-")} />
+                <Button title="4" onPress={() => calculate("4")} />
+                <Button title="5" onPress={() => calculate("5")} />
+                <Button title="6" onPress={() => calculate("6")} />
+                <Button title="-" isBlue onPress={() => calculate("-")} />
             </View>
             <View style={Styles.row}>
-                <Button title="1" onPress={() => NumberPressHandler("1")} />
-                <Button title="2" onPress={() => NumberPressHandler("2")} />
-                <Button title="3" onPress={() => NumberPressHandler("3")} />
-                <Button title="+" isBlue onPress={() => OperationPressHandler("+")} />
+                <Button title="1" onPress={() => calculate("1")} />
+                <Button title="2" onPress={() => calculate("2")} />
+                <Button title="3" onPress={() => calculate("3")} />
+                <Button title="+" isBlue onPress={() => calculate("+")} />
             </View>
             <View style={Styles.row}>
-                <Button title="." onPress={() => NumberPressHandler(".")} />
-                <Button title="0" onPress={() => NumberPressHandler("0")} />
-                <Button title="⌫" onPress={() => setFirstNumber(firstNumber.slice(0, -1))} />
-                <Button title="=" isBlue onPress={() => compResult()} />
+                <Button title="." onPress={() => calculate(".")} />
+                <Button title="0" onPress={() => calculate("0")} />
+                <Button title="⌫" onPress={() => calculate("⌫")} />
+                <Button title="=" isBlue onPress={() => calculate('=')} />
             </View>
         </View>
     )
